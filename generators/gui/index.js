@@ -26,6 +26,7 @@ module.exports = class extends Generator {
     context.mainPath = this.destinationPath('src/main/webapp/app/main.ts');
     context.entitiesMenuPath = this.destinationPath('src/main/webapp/app/entities/entities-menu.vue');
     context.i18nPath = this.destinationPath('src/main/webapp/i18n');
+    context.apiDestinationPath = this.destinationPath('src/main/webapp/app/shared/perfil-usuario/');
     let campos = GuiService.resolveJson(context);
     let secciones = GuiService.resolveSecciones(campos);
     let seccionesOpt = this.config.get('secciones');
@@ -106,6 +107,9 @@ module.exports = class extends Generator {
 
       destination = context.i18nPath + '/en/' + seccion.props.dashCase + '.json';
       this.fs.copyTpl(this.templatePath('seccion-en.json.ejs'), this.destinationPath(destination), templateVariables);
+
+      destination = context.apiDestinationPath + seccion.props.dashCase + '.yml';
+      this.fs.copyTpl(this.templatePath('api-schemas.yml.ejs'), this.destinationPath(destination), templateVariables);
     }
     this.config.set('secciones', seccionesOpt);
     this.config.save();

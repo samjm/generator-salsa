@@ -1,0 +1,96 @@
+tags:
+  - name: <%= seccion.props.dashCase%>
+    description: Seccion <%= seccion.props.label%>
+paths:
+  /users/{cvu}/<%= seccion.props.dashCase%>:
+    parameters:
+      - name: cvu
+        description: cvu del usuario
+        schema:
+          type: string
+        in: path
+        required: true
+    description: Operaciones sobre la información <%= seccion.props.label%> del usuario
+    post:
+      tags:
+        - 'perfil'
+        - '<%= seccion.props.dashCase%>'
+      description: Guarda los campos de la sección <%= seccion.props.label%>
+      operationId: save<%= seccion.props.pascalCase%>
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/<%= seccion.props.pascalCase%>'
+      responses:
+        '201':
+          $ref: '#/components/responses/<%= seccion.props.pascalCase%>Response'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        default:
+          $ref: '#/components/responses/UnexpectedError'
+    get:
+      tags:
+        - 'perfil'
+        - '<%= seccion.props.dashCase%>'
+      description: Obtiene la información de la sección <%= seccion.props.label%>
+      operationId: get<%= seccion.props.pascalCase%>
+      responses:
+        '200':
+          $ref: '#/components/responses/<%= seccion.props.pascalCase%>Response'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        default:
+          $ref: '#/components/responses/UnexpectedError'
+components:
+  schemas:
+    <%_ for (const mayBeSubseccion in seccion) { _%>
+      <%_ if (mayBeSubseccion != 'props') { _%>
+    <%= seccion[mayBeSubseccion].props.pascalCase %>:
+      description: Subsección <%= seccion[mayBeSubseccion].props.label %>
+      properties:
+        <%_ seccion[mayBeSubseccion].campos.forEach(campo => { _%>
+        <%= campo.dashCase %>:
+          description: <%= campo.description%>
+          type: <%= campo.apiDataType%>
+          <%_ if (campo.apiDataType === 'array') { _%>
+          items:
+            type: string 
+          <%_ } _%>
+        <%_ }); _%>
+      <%_ } _%>
+    <%_ } _%>
+    <%= seccion.props.pascalCase%>:
+      type: object
+      description: Sección <%= seccion.props.label%>
+      allOf:
+      <%_ for (const mayBeSubseccion in seccion) { _%>
+        <%_ if (mayBeSubseccion != 'props') { _%>
+        - $ref: '#/components/schemas/<%= seccion[mayBeSubseccion].props.pascalCase %>'
+        <%_ } _%>
+      <%_ } _%>
+  responses:
+    <%= seccion.props.pascalCase%>Response:
+      description: OK
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/<%= seccion.props.pascalCase%>'
+          

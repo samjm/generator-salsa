@@ -76,6 +76,7 @@ module.exports = class guiService {
     campo.descriptionEn = campo.descripcionEn;
     campo.validations = this.resolveValidations(campo);
     campo.props = this.resolveProps(campo);
+    campo.apiDataType = this.resolveApiDataType(campo.tipoUi);
     return campo;
   }
 
@@ -84,7 +85,7 @@ module.exports = class guiService {
       return 'Date';
     }
 
-    if (tipoUi === 'Text' || tipoUi === 'TextArea' || tipoUi === 'ListBox') {
+    if (tipoUi === 'Text' || tipoUi === 'TextArea') {
       return 'string';
     }
 
@@ -98,6 +99,33 @@ module.exports = class guiService {
 
     if (tipoUi === 'MultiSelect' || tipoUi === 'selectMultiple') {
       return '[]';
+    }
+
+    if (tipoUi === 'Radio Button' || tipoUi === 'Boolean') {
+      return 'boolean';
+    }
+    return 'string';
+  }
+
+  static resolveApiDataType(tipoUi) {
+    if (tipoUi === 'Date') {
+      return 'string';
+    }
+
+    if (tipoUi === 'Text' || tipoUi === 'TextArea' || tipoUi === 'selectRadio') {
+      return 'string';
+    }
+
+    if (tipoUi === 'Number') {
+      return 'number';
+    }
+
+    if (tipoUi === 'ListBox' || tipoUi === 'cardsList') {
+      return 'array';
+    }
+
+    if (tipoUi === 'MultiSelect' || tipoUi === 'selectMultiple') {
+      return 'array';
     }
 
     if (tipoUi === 'Radio Button' || tipoUi === 'Boolean') {
